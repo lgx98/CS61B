@@ -1,11 +1,12 @@
 import java.util.Formatter;
+import java.util.stream.DoubleStream;
 
 /**
  * A naked recursive list of integers, similar to what we saw in lecture 3, but
  * with a large number of additional methods.
  *
  * @author P. N. Hilfinger, with some modifications by Josh Hug and melaniecebula
- *         [Do not modify this file.]
+ * [Do not modify this file.]
  */
 public class IntList {
     /**
@@ -29,7 +30,7 @@ public class IntList {
      * A List with null rest, and first = 0.
      */
     public IntList() {
-    /* NOTE: public IntList () { }  would also work. */
+        /* NOTE: public IntList () { }  would also work. */
         this(0, null);
     }
 
@@ -81,8 +82,15 @@ public class IntList {
      */
 
     public static IntList dcatenate(IntList A, IntList B) {
-        //TODO:  fill in method
-        return null;
+        if (A == null) {
+            return B;
+        } else {
+            IntList tailNode = A;
+            while (tailNode.rest != null)
+                tailNode = tailNode.rest;
+            tailNode.rest = B;
+            return A;
+        }
     }
 
     /**
@@ -90,24 +98,59 @@ public class IntList {
      * * elements of B.  May NOT modify items of A.  Use 'new'.
      */
     public static IntList catenate(IntList A, IntList B) {
-        //TODO:  fill in method
-        return null;
+        /* actually I wanted to add a method called "public copyAndAppend(IntList A)"
+         * then this function would be:
+         *
+         * IntList catList = new IntList();
+         * catList.copyAndAppend(A);
+         * catList.copyAndAppend(B);
+         * return catList.rest;
+         *
+         * and method "public IntList copy(IntList A)" could be implemented elegantly by reusing the function:
+         *
+         * IntList copiedList = new IntList();
+         * copiedList.copyAndAppend(A);
+         * return catList.rest;
+         *
+         */
+
+        IntList catList = new IntList(); //0th node, using it as a hidden head
+        IntList tailNode = catList; //tailNode always points to the last node of catList
+
+        //extracted from the method "public copyAndAppend(IntList A)"
+        tailNode.rest = A; //tailNode.rest always points to the Node to be copied
+        while (tailNode.rest != null) {
+            tailNode.rest = new IntList(tailNode.rest.first, tailNode.rest.rest);
+            //make a copy of tailNode.rest, and let it become the next Node
+            tailNode = tailNode.rest; //move tailNode to the new tail
+        }
+
+        //the same as copying A
+        tailNode.rest = B;
+        while (tailNode.rest != null) {
+            tailNode.rest = new IntList(tailNode.rest.first, tailNode.rest.rest);
+            tailNode = tailNode.rest;
+        }
+        return catList.rest; //dispose the hidden head before returning
     }
 
+    /*
+    //some exercises:
+    public static IntList getLastNode(IntList list) {
+        return (list.rest == null) ? list : getLastNode(list.rest);
+    }
 
+    public void copyAndAppendWrapper(IntList A) {
+        copyAndAppendRecursively(A, IntList.getLastNode(this));
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
+    public void copyAndAppendRecursively(IntList A, IntList tailNode) {
+        if (A != null) {
+            tailNode.rest = new IntList(A.first, null);
+            copyAndAppendRecursively(A.rest, tailNode.rest);
+        }
+    }
+    //*/
 
     /**
      * DO NOT MODIFY ANYTHING BELOW THIS LINE! Many of the concepts below here
