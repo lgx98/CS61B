@@ -4,10 +4,10 @@ public class ArrayDeque<T> {
     private int usedSize;
     private int arraySize;
     private int firstIndex; //0<=firstIndex<arraySize
-    final private double lowUsageRatio = 0.25;
-    final private double highUsageRatio = 1;
+    private final double lowUsageRatio = 0.25;
+    private final double highUsageRatio = 1;
 
-    private T[] Array;
+    private T[] array;
 
     /**
      * Make a new array of 2x size, then move all the data to the new Array.
@@ -16,13 +16,13 @@ public class ArrayDeque<T> {
     private void checkExpandArray() {
         if (this.usedSize == this.arraySize) {
             T[] newArray = (T[]) new Object[this.arraySize * 2];
-            arraycopy(this.Array, 0, newArray, 0, this.firstIndex);
-            arraycopy(this.Array,
+            arraycopy(this.array, 0, newArray, 0, this.firstIndex);
+            arraycopy(this.array,
                     this.firstIndex,
                     newArray,
                     this.firstIndex + this.arraySize,
                     this.arraySize - this.firstIndex);
-            this.Array = newArray;
+            this.array = newArray;
             this.firstIndex += this.arraySize;
             this.arraySize *= 2;
         }
@@ -34,19 +34,19 @@ public class ArrayDeque<T> {
     private void checkShrinkArray() {
         if ((this.arraySize > 8) && (this.usedSize < this.arraySize * lowUsageRatio)) {
             T[] newArray = (T[]) new Object[this.arraySize / 2];
-            arraycopy(this.Array,
+            arraycopy(this.array,
                     this.firstIndex,
                     newArray,
                     this.firstIndex % (this.arraySize / 2),
                     Math.min(this.arraySize - this.firstIndex, this.usedSize));
             if (this.firstIndex + this.usedSize > this.arraySize) {
-                arraycopy(this.Array,
+                arraycopy(this.array,
                         0,
                         newArray,
                         0,
                         this.firstIndex + this.usedSize - this.arraySize);
             }
-            this.Array = newArray;
+            this.array = newArray;
             this.arraySize /= 2;
             this.firstIndex = this.firstIndex % (this.arraySize);
         }
@@ -56,7 +56,7 @@ public class ArrayDeque<T> {
         this.usedSize = 0;
         this.arraySize = 8;
         this.firstIndex = 0;
-        this.Array = (T[]) new Object[8];
+        this.array = (T[]) new Object[8];
     }
 
     /**
@@ -66,7 +66,7 @@ public class ArrayDeque<T> {
         checkExpandArray();
         this.usedSize++;
         this.firstIndex = ((this.firstIndex == 0 ? this.arraySize : this.firstIndex) - 1);
-        this.Array[this.firstIndex] = item;
+        this.array[this.firstIndex] = item;
     }
 
     /**
@@ -74,7 +74,7 @@ public class ArrayDeque<T> {
      */
     public void addLast(T item) {
         checkExpandArray();
-        this.Array[(this.firstIndex + this.usedSize) % this.arraySize] = item;
+        this.array[(this.firstIndex + this.usedSize) % this.arraySize] = item;
         this.usedSize++;
     }
 
@@ -97,7 +97,7 @@ public class ArrayDeque<T> {
      */
     public void printDeque() {
         for (int i = 0; i < this.usedSize; i++) {
-            out.print(this.Array[(i + this.firstIndex) % this.arraySize] + " ");
+            out.print(this.array[(i + this.firstIndex) % this.arraySize] + " ");
         }
     }
 
@@ -105,7 +105,7 @@ public class ArrayDeque<T> {
      * Removes and returns the item at the front of the deque. If no such item exists, returns null.
      */
     public T removeFirst() {
-        T value = this.Array[firstIndex];
+        T value = this.array[firstIndex];
         this.firstIndex = (this.firstIndex == (this.arraySize - 1)) ? 0 : (this.firstIndex + 1);
         this.usedSize = (this.usedSize == 0) ? 0 : (this.usedSize - 1);
         checkShrinkArray();
@@ -117,20 +117,20 @@ public class ArrayDeque<T> {
      */
     public T removeLast() {
         this.usedSize--;
-        T value = this.Array[(this.firstIndex + this.usedSize) % this.arraySize];
+        T value = this.array[(this.firstIndex + this.usedSize) % this.arraySize];
         checkShrinkArray();
         return value;
     }
 
     /**
-     * Gets the item at the given index, where 0 is the front, 1 is the next item, and so forth. If no such item exists,
-     * returns null. Must not alter the deque!
+     * Gets the item at the given index, where 0 is the front, 1 is the next item, and so forth.
+     * If no such item exists, returns null. Must not alter the deque!
      */
     public T get(int index) {
-        if (index + 1 > this.usedSize) {
+        if ((index + 1 > this.usedSize) || (index < 0)) {
             return null;
         } else {
-            return this.Array[(this.firstIndex + index) % this.arraySize];
+            return this.array[(this.firstIndex + index) % this.arraySize];
         }
     }
 }

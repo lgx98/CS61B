@@ -4,11 +4,11 @@ public class LinkedListDeque<T> {
      * Inner class for double linked list node.
      */
     private static class DNode<T> {
-        public T value;
-        public DNode<T> prev;
-        public DNode<T> next;
+        private T value;
+        private DNode<T> prev;
+        private DNode<T> next;
 
-        public DNode(T value, DNode<T> prev, DNode<T> next) {
+        DNode(T value, DNode<T> prev, DNode<T> next) {
             this.value = value;
             this.prev = prev;
             this.next = next;
@@ -16,22 +16,22 @@ public class LinkedListDeque<T> {
     }
 
     private int size;
-    private final DNode<T> Sentinel;
+    private final DNode<T> sentinel;
 
     public LinkedListDeque() {
         this.size = 0;
-        this.Sentinel = new DNode<>(null, null, null);
-        this.Sentinel.prev = this.Sentinel;
-        this.Sentinel.next = this.Sentinel;
+        this.sentinel = new DNode<>(null, null, null);
+        this.sentinel.prev = this.sentinel;
+        this.sentinel.next = this.sentinel;
     }
 
     /**
      * Adds an item of type T to the front of the deque.
      */
     public void addFirst(T item) {
-        DNode<T> newNode = new DNode<>(item, this.Sentinel, this.Sentinel.next);
-        this.Sentinel.next.prev = newNode;
-        this.Sentinel.next = newNode;
+        DNode<T> newNode = new DNode<>(item, this.sentinel, this.sentinel.next);
+        this.sentinel.next.prev = newNode;
+        this.sentinel.next = newNode;
         this.size++;
     }
 
@@ -39,9 +39,9 @@ public class LinkedListDeque<T> {
      * Adds an item of type T to the back of the deque.
      */
     public void addLast(T item) {
-        DNode<T> newNode = new DNode<>(item, this.Sentinel.prev, this.Sentinel);
-        this.Sentinel.prev.next = newNode;
-        this.Sentinel.prev = newNode;
+        DNode<T> newNode = new DNode<>(item, this.sentinel.prev, this.sentinel);
+        this.sentinel.prev.next = newNode;
+        this.sentinel.prev = newNode;
         this.size++;
     }
 
@@ -63,8 +63,8 @@ public class LinkedListDeque<T> {
      * Prints the items in the deque from first to last, separated by a space.
      */
     public void printDeque() {
-        DNode<T> current = Sentinel.next;
-        while (current != Sentinel) {
+        DNode<T> current = sentinel.next;
+        while (current != sentinel) {
             System.out.print(current.value + " ");
             current = current.next;
         }
@@ -74,9 +74,9 @@ public class LinkedListDeque<T> {
      * Removes and returns the item at the front of the deque. If no such item exists, returns null.
      */
     public T removeFirst() {
-        DNode<T> first = this.Sentinel.next;
-        first.next.prev = this.Sentinel;
-        this.Sentinel.next = first.next;
+        DNode<T> first = this.sentinel.next;
+        first.next.prev = this.sentinel;
+        this.sentinel.next = first.next;
         this.size = Math.max(this.size - 1, 0);
         return first.value;
     }
@@ -85,22 +85,22 @@ public class LinkedListDeque<T> {
      * Removes and returns the item at the back of the deque. If no such item exists, returns null.
      */
     public T removeLast() {
-        DNode<T> last = this.Sentinel.prev;
-        last.prev.next = this.Sentinel;
-        this.Sentinel.prev = last.prev;
+        DNode<T> last = this.sentinel.prev;
+        last.prev.next = this.sentinel;
+        this.sentinel.prev = last.prev;
         this.size = Math.max(this.size - 1, 0);
         return last.value;
     }
 
     /**
-     * Gets the item at the given index, where 0 is the front, 1 is the next item, and so forth. If no such item exists,
-     * returns null. Must not alter the deque!
+     * Gets the item at the given index, where 0 is the front, 1 is the next item, and so forth.
+     * If no such item exists, returns null. Must not alter the deque!
      */
     public T get(int index) {
-        if ((index + 1) > this.size) {
+        if (((index + 1) > this.size) || (index < 0)) {
             return null;
         } else {
-            DNode<T> current = Sentinel.next;
+            DNode<T> current = sentinel.next;
             for (int i = 0; i < index; i++) {
                 current = current.next;
             }
@@ -115,7 +115,7 @@ public class LinkedListDeque<T> {
         if ((index + 1) > this.size) {
             return null;
         } else {
-            return getIthAhead(this.Sentinel.next, index);
+            return getIthAhead(this.sentinel.next, index);
         }
     }
 
