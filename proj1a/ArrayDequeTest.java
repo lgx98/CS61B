@@ -9,6 +9,8 @@ public class ArrayDequeTest {
         assertTrue(testDeque.isEmpty());
         assertNull(testDeque.get(0));
         assertEquals(testDeque.size(), 0);
+        assertNull(testDeque.removeFirst());
+        assertNull(testDeque.removeLast());
     }
 
     @Test
