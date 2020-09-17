@@ -105,6 +105,9 @@ public class ArrayDeque<T> {
      * Removes and returns the item at the front of the deque. If no such item exists, returns null.
      */
     public T removeFirst() {
+        if (this.usedSize == 0) {
+            return null;
+        }
         T value = this.array[firstIndex];
         this.firstIndex = (this.firstIndex == (this.arraySize - 1)) ? 0 : (this.firstIndex + 1);
         this.usedSize = (this.usedSize == 0) ? 0 : (this.usedSize - 1);
@@ -116,6 +119,9 @@ public class ArrayDeque<T> {
      * Removes and returns the item at the back of the deque. If no such item exists, returns null.
      */
     public T removeLast() {
+        if (this.usedSize == 0) {
+            return null;
+        }
         this.usedSize--;
         T value = this.array[(this.firstIndex + this.usedSize) % this.arraySize];
         checkShrinkArray();
