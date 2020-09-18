@@ -16,14 +16,21 @@ public class ArrayDeque<T> {
     private void checkExpandArray() {
         if (this.usedSize == this.arraySize) {
             T[] newArray = (T[]) new Object[this.arraySize * 2];
-            arraycopy(this.array, 0, newArray, 0, this.firstIndex);
+            //To make debugging easier, the first element will be at index 0 in the new array.
+            // from the first element to the end of the old array
             arraycopy(this.array,
                     this.firstIndex,
                     newArray,
-                    this.firstIndex + this.arraySize,
+                    0,
                     this.arraySize - this.firstIndex);
+            // for the wrapped-around elements
+            arraycopy(this.array,
+                    0,
+                    newArray,
+                    this.arraySize - this.firstIndex,
+                    this.firstIndex);
             this.array = newArray;
-            this.firstIndex += this.arraySize;
+            this.firstIndex = 0;
             this.arraySize *= 2;
         }
     }
@@ -34,21 +41,23 @@ public class ArrayDeque<T> {
     private void checkShrinkArray() {
         if ((this.arraySize > 8) && (this.usedSize < this.arraySize * lowUsageRatio)) {
             T[] newArray = (T[]) new Object[this.arraySize / 2];
+            //To make debugging easier, the first element will be at index 0 in the new array.
+            int length = Math.min(this.arraySize - this.firstIndex, this.usedSize);
             arraycopy(this.array,
                     this.firstIndex,
                     newArray,
-                    this.firstIndex % (this.arraySize / 2),
-                    Math.min(this.arraySize - this.firstIndex, this.usedSize));
-            if (this.firstIndex + this.usedSize > this.arraySize) {
+                    0,
+                    length);
+            if (this.usedSize > length) {
                 arraycopy(this.array,
                         0,
                         newArray,
-                        0,
-                        this.firstIndex + this.usedSize - this.arraySize);
+                        length,
+                        this.usedSize - length);
             }
             this.array = newArray;
             this.arraySize /= 2;
-            this.firstIndex = this.firstIndex % (this.arraySize);
+            this.firstIndex = 0;
         }
     }
 
